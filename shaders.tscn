@@ -1,0 +1,125 @@
+[gd_scene load_steps=13 format=3 uid="uid://cfx5w3stp3v8u"]
+
+[ext_resource type="Shader" path="res://grid.gdshader" id="1_aouv8"]
+[ext_resource type="Texture2D" uid="uid://bmjdd8g8t30p3" path="res://godot_logo.png" id="2_eaaj4"]
+[ext_resource type="Shader" path="res://dotted_outline.gdshader" id="3_70tag"]
+[ext_resource type="Shader" path="res://Disolve.gdshader" id="4_30hox"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_33r02"]
+shader = ExtResource("1_aouv8")
+shader_parameter/wall_thickness = 1.0
+shader_parameter/total_cell_size = 6.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pjijw"]
+shader = ExtResource("3_70tag")
+shader_parameter/outline_color = Color(1, 1, 1, 1)
+shader_parameter/frequency = 20.0
+shader_parameter/line_thickness = 8.0
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_jv4j5"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_t7ly1"]
+noise = SubResource("FastNoiseLite_jv4j5")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_l6uo5"]
+shader = ExtResource("4_30hox")
+shader_parameter/value = 1.0
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_t7ly1")
+
+[sub_resource type="Animation" id="Animation_7b8ew"]
+length = 10.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Disolve:material:shader_parameter/value")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 5, 10),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [1.0, 0.0, 1.0]
+}
+
+[sub_resource type="Animation" id="Animation_1p6it"]
+resource_name = "new_animation"
+length = 10.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Disolve:material:shader_parameter/value")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 5, 10),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [1.0, 0.0, 1.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_qrpqx"]
+_data = {
+"RESET": SubResource("Animation_7b8ew"),
+"new_animation": SubResource("Animation_1p6it")
+}
+
+[node name="Node2D" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GridShader" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_33r02")
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 48.0
+offset_top = -137.0
+offset_right = 348.0
+offset_bottom = 146.0
+grow_vertical = 2
+texture = ExtResource("2_eaaj4")
+
+[node name="OutlineShader" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_pjijw")
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -157.0
+offset_top = -141.0
+offset_right = 143.0
+offset_bottom = 142.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_eaaj4")
+
+[node name="Disolve" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_l6uo5")
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -139.0
+offset_right = -60.0
+offset_bottom = 144.0
+grow_horizontal = 0
+grow_vertical = 2
+texture = ExtResource("2_eaaj4")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_qrpqx")
+}
+autoplay = "RESET"
